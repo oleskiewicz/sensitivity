@@ -1,39 +1,52 @@
 Sensitivity Analysis pipeline
 =============================
 
-Uses `SALib` Python library to run multivariate sensitivity analysis on a model
-of choice.
+Uses `SALib` Python library to run sensitivity analysis (SA) of models.
+
 
 Requirements
 ------------
 
 - make
-- Python 3
+- Python
 - SALib Python library
 - GNU Parallel
+
 
 Usage
 -----
 
-This pipeline automates the following steps:
+	EXP=ishigami make sa fig
 
-1. create experiment file (`params.txt`)
-2. sample parameter space, generate model inputs (`inputs.txt`)
-3. calculate outputs, run model on the inputs using GNU Parallel (`outputs.txt`)
-4. analyze model outputs, calculate Sobol indices (`inds.txt`)
+Will run experiment defined in exp/ishigami.mk, reading and writing data at
+dat/ishigami, and saving figures in fig/ishigami.
 
-        .
-        ├── cmd
-        │  └── ishigami.py
-        ├── dat
-        │  ├── inds.txt
-        │  ├── inputs.txt
-        │  ├── outputs.txt
-        │  └── params.txt
-        └── Makefile
+The following structure is assumed:
 
-It is entirely make-driven (see `Makefile`); model can be swapped for any
-Parallel-compatible programme by simply changing `F` command.
+	.
+	├── dat/
+	│   └── ishigami/
+	│       ├── params.txt
+	│       ├── si.txt
+	│       ├── x.txt
+	│       └── y.txt
+	├── exp/
+	│   └── ishigami.mk
+	└── fig/
+	    └── ishigami/
+	        ├── grid.png
+	        └── si.png
+
+- .mk file contains experiment definition: random seed, sampling number, etc.
+- params.txt contains SALib experiment parameter file, with variable ranges
+- x.txt and y.txt contain model inputs and outputs
+- si.txt is where sensitivity indices will be written to
+- grid.png visualises all model inputs on a corner plot
+- sa.png plots first and total order indices
+
+The pipeline is declared in the Makefile, and multiple experiments can be ran by
+simply swapping the exp/*.mk files.
+
 
 Help
 ----
